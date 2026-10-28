@@ -256,7 +256,15 @@ namespace UC
 		inline bool Add(const ArrayElementType& Element)
 		{
 			if (GetSlack() <= 0)
-				return false;
+			{
+				MaxElements = 1 + (MaxElements * 2);
+				if (!Data) {
+					Data = (ArrayElementType*)malloc(Data, sizeof(ArrayElementType) * MaxElements);
+				}
+				else {
+					Data = (ArrayElementType*)realloc(Data, sizeof(ArrayElementType) * MaxElements);
+				}
+			}
 
 			Data[NumElements] = Element;
 			NumElements++;
@@ -286,6 +294,14 @@ namespace UC
 
 			if (!Data)
 				memset(Data, 0, NumElements * ElementSize);
+		}
+
+		inline void Free()
+		{
+			this->NumElements = 0;
+			this->MaxElements = 0;
+			if (this->Data) free(this->Data);
+			this->Data = nullptr;
 		}
 
 	public:
